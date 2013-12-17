@@ -25,7 +25,9 @@ typedef enum {
 @property (nonatomic, assign) TwitterTextEntityType type;
 @property (nonatomic, assign) NSRange range;
 @property (nonatomic, strong) NSString *representedString;
+@property (nonatomic, strong) NSString *shortenedText;
 
++ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range shortenedText:(NSString *)shortText representedString:(NSString *)repString;
 + (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range representedString:(NSString *)repString;
 
 @end

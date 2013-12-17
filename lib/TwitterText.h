@@ -17,9 +17,10 @@
 
 + (NSArray*)entitiesInText:(NSString*)text;
 + (NSArray*)URLsInText:(NSString*)text;
-+ (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
++ (NSArray*)URLsInText:(NSString*)text shouldShorten:(BOOL)shouldShorten;
++ (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap shortenedURLs:(BOOL)shortenedURLs;
 + (NSArray*)symbolsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap;
-+ (NSArray*)mentionedScreenNamesInText:(NSString*)text;
++ (NSArray*)mentionedScreenNamesInText:(NSString*)text shortenedURLs:(BOOL)shortenedURLs;
 + (NSArray*)mentionsOrListsInText:(NSString*)text;
 + (TwitterTextEntity*)repliedScreenNameInText:(NSString*)text;
 

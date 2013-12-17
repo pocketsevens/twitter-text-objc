@@ -17,21 +17,27 @@
 @synthesize type;
 @synthesize range;
 @synthesize representedString;
+@synthesize shortenedText;
 
-- (id)initWithType:(TwitterTextEntityType)aType range:(NSRange)aRange representedString:(NSString *)repString
+- (id)initWithType:(TwitterTextEntityType)aType range:(NSRange)aRange shortenedText:(NSString *)shortText representedString:(NSString *)repString
 {
     self = [super init];
     if (self) {
         type = aType;
         range = aRange;
 		representedString = repString;
+		shortenedText = shortText;
     }
     return self;
 }
 
-+ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range representedString:(NSString *)repString
++ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range representedString:(NSString *)repString {
+    return [self entityWithType:type range:range shortenedText:nil representedString:repString];
+}
+
++ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range shortenedText:(NSString *)shortText representedString:(NSString *)repString
 {
-    TwitterTextEntity *entity = [[self alloc] initWithType:type range:range representedString:repString];
+    TwitterTextEntity *entity = [[self alloc] initWithType:type range:range shortenedText:shortText representedString:repString];
 #if !__has_feature(objc_arc)
     [entity autorelease];
 #endif

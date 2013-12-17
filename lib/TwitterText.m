@@ -340,7 +340,11 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)URLsInText:(NSString*)text
++ (NSArray*)URLsInText:(NSString*)text {
+	return [self URLsInText:text shouldShorten:NO];
+}
+
++ (NSArray*)URLsInText:(NSString*)text shouldShorten:(BOOL)shouldShorten
 {
     if (!text.length) {
         return [NSArray array];
@@ -418,8 +422,21 @@ static const NSInteger HTTPSShortURLLength = 23;
             if (tcoRange.location != NSNotFound) {
                 urlRange.length = tcoRange.length;
             }
-
-            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange representedString:[text substringWithRange:urlRange]];
+			
+			NSString *urlText = [text substringWithRange:urlRange];
+			TwitterTextEntity *entity = nil;
+			BOOL willShorten = shouldShorten;
+			if (urlRange.length - protocolRange.length < 23) {
+				willShorten = NO;	//Don't bother shortening if the URL is less than 23 chars
+			}
+			if (willShorten) {
+				NSString *protocolText = [text substringWithRange:protocolRange];
+				NSString *shortenedText = [NSString stringWithFormat:@"%@%@...%@", protocolText, [urlText substringWithRange:NSMakeRange(protocolText.length, 10)], [urlText substringWithRange:NSMakeRange(urlText.length - 10, 10)]];
+				NSRange shortRange = NSMakeRange(urlRange.location, shortenedText.length);
+				entity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:shortRange shortenedText:shortenedText representedString:urlText];
+			} else {
+				entity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange representedString:urlText];
+			}
             [results addObject:entity];
         }
     }
@@ -427,7 +444,7 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap
++ (NSArray*)hashtagsInText:(NSString*)text checkingURLOverlap:(BOOL)checkingURLOverlap shortenedURLs:(BOOL)shortenedURLs
 {
     if (!text.length) {
         return [NSArray array];
@@ -435,9 +452,18 @@ static const NSInteger HTTPSShortURLLength = 23;
 
     NSArray *urls = nil;
     if (checkingURLOverlap) {
-        urls = [self URLsInText:text];
-    }
-    return [self hashtagsInText:text withURLEntities:urls];
+        urls = [self URLsInText:text shouldShorten:shortenedURLs];
+		
+		NSString *shortenedText = text;
+		for (TwitterTextEntity *entity in urls) {
+			if (entity.shortenedText.length) {
+				shortenedText = [shortenedText stringByReplacingOccurrencesOfString:entity.representedString withString:entity.shortenedText];
+			}
+		}
+		return [self hashtagsInText:shortenedText withURLEntities:urls];
+    } else {
+		return [self hashtagsInText:text withURLEntities:urls];
+	}
 }
 
 + (NSArray*)hashtagsInText:(NSString*)text withURLEntities:(NSArray*)urlEntities
@@ -539,13 +565,27 @@ static const NSInteger HTTPSShortURLLength = 23;
     return results;
 }
 
-+ (NSArray*)mentionedScreenNamesInText:(NSString*)text
++ (NSArray*)mentionedScreenNamesInText:(NSString*)text shortenedURLs:(BOOL)shortenedURLs
 {
     if (!text.length) {
         return [NSArray array];
     }
-
-    NSArray *mentionsOrLists = [self mentionsOrListsInText:text];
+	
+	NSArray *mentionsOrLists = nil;
+	if (shortenedURLs) {
+		NSArray *urls = [self URLsInText:text shouldShorten:shortenedURLs];
+		
+		NSString *shortenedText = text;
+		for (TwitterTextEntity *entity in urls) {
+			if (entity.shortenedText.length) {
+				shortenedText = [shortenedText stringByReplacingOccurrencesOfString:entity.representedString withString:entity.shortenedText];
+			}
+		}
+		mentionsOrLists = [self mentionsOrListsInText:shortenedText];
+	} else {
+		mentionsOrLists = [self mentionsOrListsInText:text];
+	}
+	
     NSMutableArray *results = [NSMutableArray array];
 
     for (TwitterTextEntity *entity in mentionsOrLists) {
