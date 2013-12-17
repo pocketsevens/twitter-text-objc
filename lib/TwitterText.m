@@ -387,7 +387,7 @@ static const NSInteger HTTPSShortURLLength = 23;
                 }
 
                 urlRange = asciiResult.range;
-                lastEntity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange];
+                lastEntity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange representedString:[text substringWithRange:urlRange]];
 
                 NSTextCheckingResult *invalidShortResult = [[self invalidShortDomainRegexp] firstMatchInString:text options:0 range:urlRange];
                 lastInvalidShortResult = (invalidShortResult != nil);
@@ -419,7 +419,7 @@ static const NSInteger HTTPSShortURLLength = 23;
                 urlRange.length = tcoRange.length;
             }
 
-            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange];
+            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityURL range:urlRange representedString:[text substringWithRange:urlRange]];
             [results addObject:entity];
         }
     }
@@ -477,7 +477,7 @@ static const NSInteger HTTPSShortURLLength = 23;
             }
 
             if (matchOk) {
-                TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityHashtag range:hashtagRange];
+                TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityHashtag range:hashtagRange representedString:[text substringWithRange:hashtagRange]];
                 [results addObject:entity];
             }
         }
@@ -529,7 +529,7 @@ static const NSInteger HTTPSShortURLLength = 23;
         }
 
         if (matchOk) {
-            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntitySymbol range:symbolRange];
+            TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntitySymbol range:symbolRange representedString:[text substringWithRange:symbolRange]];
             [results addObject:entity];
         }
 
@@ -582,11 +582,14 @@ static const NSInteger HTTPSShortURLLength = 23;
             NSRange screenNameRange = [matchResult rangeAtIndex:3];
             NSRange listNameRange = [matchResult rangeAtIndex:4];
 
+			NSRange totalRange;
             if (listNameRange.location == NSNotFound) {
-                TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:NSMakeRange(atSignRange.location, NSMaxRange(screenNameRange) - atSignRange.location)];
+				totalRange = NSMakeRange(atSignRange.location, NSMaxRange(screenNameRange) - atSignRange.location);
+                TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:totalRange representedString:[text substringWithRange:totalRange]];
                 [results addObject:entity];
             } else {
-                TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityListName range:NSMakeRange(atSignRange.location, NSMaxRange(listNameRange) - atSignRange.location)];
+				totalRange = NSMakeRange(atSignRange.location, NSMaxRange(listNameRange) - atSignRange.location);
+                TwitterTextEntity *entity = [TwitterTextEntity entityWithType:TwitterTextEntityListName range:totalRange representedString:[text substringWithRange:totalRange]];
                 [results addObject:entity];
             }
         } else {
@@ -621,7 +624,7 @@ static const NSInteger HTTPSShortURLLength = 23;
         return nil;
     }
 
-    return [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:replyRange];
+    return [TwitterTextEntity entityWithType:TwitterTextEntityScreenName range:replyRange representedString:[text substringWithRange:replyRange]];
 }
 
 + (NSInteger)tweetLength:(NSString*)text

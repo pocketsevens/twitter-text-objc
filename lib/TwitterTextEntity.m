@@ -16,20 +16,22 @@
 
 @synthesize type;
 @synthesize range;
+@synthesize representedString;
 
-- (id)initWithType:(TwitterTextEntityType)aType range:(NSRange)aRange
+- (id)initWithType:(TwitterTextEntityType)aType range:(NSRange)aRange representedString:(NSString *)repString
 {
     self = [super init];
     if (self) {
         type = aType;
         range = aRange;
+		representedString = repString;
     }
     return self;
 }
 
-+ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range
++ (id)entityWithType:(TwitterTextEntityType)type range:(NSRange)range representedString:(NSString *)repString
 {
-    TwitterTextEntity *entity = [[self alloc] initWithType:type range:range];
+    TwitterTextEntity *entity = [[self alloc] initWithType:type range:range representedString:repString];
 #if !__has_feature(objc_arc)
     [entity autorelease];
 #endif
@@ -77,7 +79,7 @@
             typeString = @"Symbol";
             break;
     }
-    return [NSString stringWithFormat:@"<%@: %@ %@>", NSStringFromClass([self class]), typeString, NSStringFromRange(range)];
+    return [NSString stringWithFormat:@"<%@: %@ %@> %@", NSStringFromClass([self class]), typeString, NSStringFromRange(range), representedString];
 }
 
 @end
