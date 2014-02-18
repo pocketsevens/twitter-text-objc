@@ -165,16 +165,16 @@
 
 #define TWUValidMentionPrecedingChars   @"(?:[^a-zA-Z0-9_!#$%&*@＠]|^|RT:?)"
 #define TWUAtSigns                      @"[@＠]"
-#define TWUValidUsername                @"\\A" TWUAtSigns @"[a-zA-Z0-9_.]{1,20}\\z"
-#define TWUValidList                    @"\\A" TWUAtSigns @"[a-zA-Z0-9_.]{1,20}/[a-zA-Z][a-zA-Z0-9_.\\-]{0,24}\\z"
+#define TWUValidUsername                @"\\A" TWUAtSigns @"[a-zA-Z0-9_.]{1,30}\\z"
+#define TWUValidList                    @"\\A" TWUAtSigns @"[a-zA-Z0-9_.]{1,30}/[a-zA-Z][a-zA-Z0-9_.\\-]{0,34}\\z"
 
 #define TWUValidMentionOrList \
     @"(" TWUValidMentionPrecedingChars @")" \
     @"(" TWUAtSigns @")" \
-    @"([a-zA-Z0-9_.]{1,20})" \
-    @"(/[a-zA-Z][a-zA-Z0-9_.\\-]{0,24})?"
+    @"([a-zA-Z0-9_.]{1,30})" \
+    @"(/[a-zA-Z][a-zA-Z0-9_.\\-]{0,34})?"
 
-#define TWUValidReply                   @"\\A(?:[" TWUUnicodeSpaces @"])*" TWUAtSigns @"([a-zA-Z0-9_]{1,20})"
+#define TWUValidReply                   @"\\A(?:[" TWUUnicodeSpaces @"])*" TWUAtSigns @"([a-zA-Z0-9_]{1,30})"
 #define TWUEndMentionMatch              @"\\A(?:" TWUAtSigns @"|[" TWULatinAccents @"]|://)"
 
 //
