@@ -1,7 +1,7 @@
 //
 //  TwitterTextEntity.m
 //
-//  Copyright 2012 Twitter, Inc.
+//  Copyright 2012-2014 Twitter, Inc.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -14,19 +14,14 @@
 
 @implementation TwitterTextEntity
 
-@synthesize type;
-@synthesize range;
-@synthesize representedString;
-@synthesize shortenedText;
-
 - (id)initWithType:(TwitterTextEntityType)aType range:(NSRange)aRange shortenedText:(NSString *)shortText representedString:(NSString *)repString
 {
     self = [super init];
     if (self) {
-        type = aType;
-        range = aRange;
-		representedString = repString;
-		shortenedText = shortText;
+        _type = aType;
+        _range = aRange;
+		_representedString = repString;
+		_shortenedText = shortText;
     }
     return self;
 }
@@ -46,8 +41,8 @@
 
 - (NSComparisonResult)compare:(TwitterTextEntity*)right
 {
-    NSInteger leftLocation = range.location;
-    NSInteger leftLength = range.length;
+    NSInteger leftLocation = _range.location;
+    NSInteger leftLength = _range.length;
     NSRange rightRange = right.range;
     NSInteger rightLocation = rightRange.location;
     NSInteger rightLength = rightRange.length;
@@ -68,7 +63,7 @@
 - (NSString*)description
 {
     NSString *typeString = nil;
-    switch (type) {
+    switch (_type) {
         case TwitterTextEntityURL:
             typeString = @"URL";
             break;
@@ -85,7 +80,7 @@
             typeString = @"Symbol";
             break;
     }
-    return [NSString stringWithFormat:@"<%@: %@ %@> %@", NSStringFromClass([self class]), typeString, NSStringFromRange(range), representedString];
+    return [NSString stringWithFormat:@"<%@: %@ %@> %@", NSStringFromClass([self class]), typeString, NSStringFromRange(_range), representedString];
 }
 
 @end

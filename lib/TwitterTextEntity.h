@@ -1,7 +1,7 @@
 //
 //  TwitterTextEntity.h
 //
-//  Copyright 2012 Twitter, Inc.
+//  Copyright 2012-2014 Twitter, Inc.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ typedef enum {
 
 @interface TwitterTextEntity : NSObject
 
-@property (nonatomic, assign) TwitterTextEntityType type;
-@property (nonatomic, assign) NSRange range;
+@property (nonatomic) TwitterTextEntityType type;
+@property (nonatomic) NSRange range;
 @property (nonatomic, strong) NSString *representedString;
 @property (nonatomic, strong) NSString *shortenedText;
 
