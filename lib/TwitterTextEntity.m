@@ -80,7 +80,7 @@
             typeString = @"Symbol";
             break;
     }
-    return [NSString stringWithFormat:@"<%@: %@ %@> %@", NSStringFromClass([self class]), typeString, NSStringFromRange(_range), representedString];
+    return [NSString stringWithFormat:@"<%@: %@ %@> %@", NSStringFromClass([self class]), typeString, NSStringFromRange(_range), _representedString];
 }
 
 @end
